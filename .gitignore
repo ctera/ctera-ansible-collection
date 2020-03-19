@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#ansible_collections/ctera/ctera/tests/output/
+output/
+reports/

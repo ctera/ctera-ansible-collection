@@ -24,8 +24,9 @@ import traceback
 
 try:
     from cterasdk import CTERAException
+    CTERASDK_IMP_ERR = None
     HAS_CTERASDK = True
-except ImportError:
+except ImportError:  # pragma: no cover
     CTERASDK_IMP_ERR = traceback.format_exc()
     HAS_CTERASDK = False
 
@@ -64,7 +65,7 @@ class AnsibleReturnValue:  # pylint: disable=attribute-defined-outside-init
 
     def warning(self, warning):
         if not hasattr(self.param, 'warnings'):
-            self.param.warnings = []
+            self.param.warnings = [warning]
         else:
             self.param.warnings.append(warning)
         return self
@@ -108,13 +109,16 @@ def cmp(a, b):
     # convert to lower case for string comparison.
     if a is None:
         return -1
-    if type(a) is str and type(b) is str:
+    # Checking both sides
+    if not (isinstance(a, type(b)) and isinstance(b, type(a))):
+        return -1
+    if isinstance(a, str) and isinstance(b, str):
         a = a.lower()
         b = b.lower()
     # if list has string element, convert string to lower case.
-    if type(a) is list and type(b) is list:
-        a = [x.lower() if type(x) is str else x for x in a]
-        b = [x.lower() if type(x) is str else x for x in b]
+    if isinstance(a, list) and isinstance(b, list):
+        a = [x.lower() if isinstance(x, list) else x for x in a]
+        b = [x.lower() if isinstance(x, list) else x for x in b]
         a.sort()
         b.sort()
     return (a > b) - (a < b)
@@ -123,7 +127,7 @@ def cmp(a, b):
 def compare_lists(current, desired, get_list_diff):
     ''' compares two lists and return a list of elements that are either the desired elements or elements that are
         modified from the current state depending on the get_list_diff flag
-        :param: current: current item attribute in ONTAP
+        :param: current: current item attribute
         :param: desired: attributes from playbook
         :param: get_list_diff: specifies whether to have a diff of desired list w.r.t current list for an attribute
         :return: list of attributes to be modified
@@ -136,10 +140,8 @@ def compare_lists(current, desired, get_list_diff):
         # there are changes
         if get_list_diff:
             return desired_diff_list
-        else:
-            return desired
-    else:
-        return []
+        return desired
+    return []
 
 
 def get_modified_attributes(current, desired, get_list_diff=False):
@@ -147,15 +149,11 @@ def get_modified_attributes(current, desired, get_list_diff=False):
         not in the current state
         It is expected that all attributes of interest are listed in current and
         desired.
-        :param: current: current attributes in ONTAP
+        :param: current: current attributes
         :param: desired: attributes from playbook
         :param: get_list_diff: specifies whether to have a diff of desired list w.r.t current list for an attribute
         :return: dict of attributes to be modified
         :rtype: dict
-
-        NOTE: depending on the attribute, the caller may need to do a modify or a
-        different operation (eg move volume if the modified attribute is an
-        aggregate name)
     '''
     # if the object does not exist,  we can't modify it
     modified = dict()
@@ -165,7 +163,7 @@ def get_modified_attributes(current, desired, get_list_diff=False):
     # collect changed attributes
     for key, value in current.items():
         if key in desired and desired[key] is not None:
-            if type(value) is list:
+            if isinstance(value, list):
                 modified_list = compare_lists(value, desired[key], get_list_diff)  # get modified list from current and desired
                 if modified_list:
                     modified[key] = modified_list
@@ -184,4 +182,15 @@ def set_result(ansible_module, messages):
         if len(messages['changed']) == 0:
             ansible_module.ctera_return_value().skipped()
         skipped_message = "Skipped: " + " ".join(messages['skipped'])
-    ansible_module.ctera_return_value().msg(' '.join([changed_message, skipped_message]))
+
+    if changed_message and skipped_message:
+        message = ' '.join([changed_message, skipped_message])
+    elif changed_message:
+        message = changed_message
+    elif skipped_message:
+        message = skipped_message
+    else:
+        message = ''
+
+    if message:
+        ansible_module.ctera_return_value().msg(message)

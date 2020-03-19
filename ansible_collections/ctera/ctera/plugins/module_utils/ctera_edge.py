@@ -25,7 +25,7 @@ import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as cter
 
 try:
     from cterasdk import Gateway, CTERAException, tojsonstr
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
