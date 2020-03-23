@@ -25,7 +25,7 @@ import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as cter
 
 try:
     from cterasdk import CTERAException, tojsonstr
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -53,8 +53,8 @@ class CteraFilerBase(object):
         self.ansible_module.ctera_exit()
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         raise NotImplementedError("Implementing classes must implemen _generic_failure_message")
 
-    def _execute(self):
+    def _execute(self):  # pragma: no cover
         raise NotImplementedError("Implementing classes must implemen _execute")

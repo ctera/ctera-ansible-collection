@@ -29,40 +29,15 @@ except ImportError:  # pragma: no cover
     pass
 
 import ansible_collections.ctera.ctera.plugins.module_utils.ctera_edge as ctera_edge
+from tests.ut.mocks import ansible_module_mock
 from tests.ut.base import BaseTest
-
-
-class MockAnsibleModule():
-
-    def __init__(self, _argument_spec, **_kwargs):
-        self.params = dict(
-            filer_host='192.168.1.1',
-            filer_user='admin',
-            filer_password='password'
-        )
-        self.fail_dict = {}
-        self.exit_dict = {}
-
-    def fail_json(self, **kwargs):
-        for k, v in kwargs.items():
-            self.fail_dict[k] = v
-
-    def exit_json(self, **kwargs):
-        for k, v in kwargs.items():
-            self.exit_dict[k] = v
-
-
-def restore_bases(bases):
-    ctera_edge.GatewayAnsibleModule.__bases__ = bases
 
 
 class TestCteraEdge(BaseTest):  #pylint: disable=too-many-public-methods
 
     def setUp(self):
         super().setUp()
-        original_bases = ctera_edge.GatewayAnsibleModule.__bases__
-        ctera_edge.GatewayAnsibleModule.__bases__ = (MockAnsibleModule,)
-        self.addCleanup(restore_bases, original_bases)
+        ansible_module_mock.mock_bases(self, ctera_edge.GatewayAnsibleModule)
 
         self.gateway_class_mock = self.patch_call("ansible_collections.ctera.ctera.plugins.module_utils.ctera_edge.Gateway")
         self.gateway_object_mock = self.gateway_class_mock.return_value

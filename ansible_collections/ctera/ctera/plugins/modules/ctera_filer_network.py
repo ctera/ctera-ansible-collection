@@ -88,7 +88,7 @@ from ansible_collections.ctera.ctera.plugins.module_utils.ctera_filer_base impor
 
 try:
     from cterasdk import gateway_enum
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -112,15 +112,15 @@ class CteraFilerNetwork(CteraFilerBase):
                 secondary_dns_server=['primary_dns_server']
             )
         )
-        self.mode = self.parameters.pop('mode')
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Network management failed'
 
     def _execute(self):
+        mode = self.parameters.pop('mode')
         config = self._get_current_config()
-        if self.mode == 'dynamic':
+        if mode == 'dynamic':
             self._ensure_dynamic(config)
         else:
             self._ensure_static(config)
@@ -171,9 +171,9 @@ class CteraFilerNetwork(CteraFilerBase):
         )
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerNetwork().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

@@ -95,7 +95,7 @@ from ansible_collections.ctera.ctera.plugins.module_utils.ctera_filer_base impor
 
 try:
     from cterasdk import CTERAException
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -111,15 +111,15 @@ class CteraFilerUser(CteraFilerBase):
             email=dict(type='str', required=False),
             uid=dict(type='str', required=False)
         ))
-        self.state = self.parameters.pop('state')
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'User management failed'
 
     def _execute(self):
+        state = self.parameters.pop('state')
         user = self._get_user()
-        if self.state == 'present':
+        if state == 'present':
             self._ensure_present(user)
         else:
             self._ensure_absent(user)
@@ -164,9 +164,9 @@ class CteraFilerUser(CteraFilerBase):
         return user_dict
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerUser().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

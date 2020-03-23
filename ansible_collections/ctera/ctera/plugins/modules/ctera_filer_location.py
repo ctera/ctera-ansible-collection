@@ -68,7 +68,7 @@ class CteraFilerLocation(CteraFilerBase):
         super().__init__(dict(location=dict(type='str', required=True)))
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to update location'
 
     def _execute(self):
@@ -81,9 +81,9 @@ class CteraFilerLocation(CteraFilerBase):
             self.ansible_module.ctera_return_value().msg('No update required to the current location').put(current_location=current_location)
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerLocation().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

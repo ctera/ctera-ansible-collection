@@ -69,7 +69,7 @@ class CteraFilerLicense(CteraFilerBase):
         super().__init__(dict(license=dict(type='str', required=True, choices=['EV8', 'EV16', 'EV32', 'EV64', 'EV128'])))
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'An error occurred while trying to apply license'
 
     def _execute(self):
@@ -81,9 +81,9 @@ class CteraFilerLicense(CteraFilerBase):
             self.ansible_module.ctera_return_value().skipped().msg('License has not changed').put(license=self.parameters['license'])
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerLicense().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

@@ -68,7 +68,7 @@ class CteraFilerTimezone(CteraFilerBase):
         super().__init__(dict(timezone=dict(type='str', required=True)))
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to update timezone'
 
     def _execute(self):
@@ -81,9 +81,9 @@ class CteraFilerTimezone(CteraFilerBase):
             self.ansible_module.ctera_return_value().msg('No update required to the current timezone').put(current_timezone=current_timezone)
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerTimezone().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

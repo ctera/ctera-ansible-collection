@@ -25,7 +25,7 @@ import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as cter
 
 try:
     from cterasdk import gateway_enum
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -33,14 +33,13 @@ class CteraFilerShareConfigBase(CteraFilerBase):
     def __init__(self, ansible_module_args, **kwars):
         ansible_module_args.update(dict(enabled=dict(type='bool', required=False, default=True)))
         super().__init__(ansible_module_args, **kwars)
-        self.enabled = self.parameters.pop('enabled')
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to manage %s configuration' % self._share_type
 
     @property
-    def _share_type(self):
+    def _share_type(self):  # pragma: no cover
         raise NotImplementedError("Implementing class must implement _share_type")
 
     @property
@@ -48,15 +47,16 @@ class CteraFilerShareConfigBase(CteraFilerBase):
         return 'mode'
 
     @property
-    def _manager(self):
+    def _manager(self):  # pragma: no cover
         raise NotImplementedError("Implementing class must implement _manager")
 
-    def _to_config_dict(self, config):
+    def _to_config_dict(self, config):  # pragma: no cover
         raise NotImplementedError("Implementing class must implement _to_config_dict")
 
     def _execute(self):
+        enabled = self.parameters.pop('enabled')
         current_config = self._get_current_config()
-        if self.enabled:
+        if enabled:
             self._ensure_enabled(current_config)
         else:
             self._ensure_disabled(current_config)

@@ -68,7 +68,7 @@ class CteraFilerHostname(CteraFilerBase):
         super().__init__(dict(hostname=dict(type='str', required=True)))
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to update hostname'
 
     def _execute(self):
@@ -81,9 +81,9 @@ class CteraFilerHostname(CteraFilerBase):
             self.ansible_module.ctera_return_value().msg('No update required to the current hostname').put(current_hostname=current_hostname)
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerHostname().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

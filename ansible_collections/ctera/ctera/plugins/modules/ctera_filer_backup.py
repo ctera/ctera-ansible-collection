@@ -52,7 +52,7 @@ class CteraFilerBackup(CteraFilerBase):
         super().__init__(dict(passphrase=dict(type='str', required=False, no_log=True)))
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed configuring cloud backup'
 
     def _execute(self):
@@ -63,9 +63,9 @@ class CteraFilerBackup(CteraFilerBase):
             self.ansible_module.ctera_return_value().changed().msg('Configured cloud backup')
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerBackup().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

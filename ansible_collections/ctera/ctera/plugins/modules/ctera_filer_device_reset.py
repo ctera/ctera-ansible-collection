@@ -61,7 +61,7 @@ class CteraFilerDeviceReset(CteraFilerBase):
         )
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to execute device reset'
 
     def _execute(self):
@@ -70,9 +70,9 @@ class CteraFilerDeviceReset(CteraFilerBase):
         self.ansible_module.ctera_return_value().changed().msg('Filer is up and running' if wait else 'Resetting device')
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerDeviceReset().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

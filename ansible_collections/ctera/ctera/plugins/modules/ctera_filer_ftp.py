@@ -105,9 +105,9 @@ class CteraFilerFtp(CteraFilerShareConfigBase):
         )
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerFtp().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

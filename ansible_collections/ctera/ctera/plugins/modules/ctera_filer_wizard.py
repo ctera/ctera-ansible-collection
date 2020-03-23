@@ -58,7 +58,7 @@ class CteraFilerWizard(CteraFilerBase):
         )
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to %s Wizard.' % ("enable" if self.parameters['enabled'] else "disable")
 
     def _execute(self):
@@ -74,9 +74,9 @@ class CteraFilerWizard(CteraFilerBase):
         self.ansible_module.ctera_return_value().changed().msg('First Time Wizard %s' % ('enabled' if self.parameters['enabled'] else 'disabled'))
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerWizard().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

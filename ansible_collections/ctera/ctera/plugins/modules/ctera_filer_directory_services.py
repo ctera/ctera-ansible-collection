@@ -114,15 +114,15 @@ class CteraFilerDirectoryServices(CteraFilerBase):
                 ('state', 'connected', ['domain', 'username', 'password'])
             ]
         )
-        self.state = self.parameters.pop('state')
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Active Directory management failed.'
 
     def _execute(self):
+        state = self.parameters.pop('state')
         connected_domain = self._get_connected_domain()
-        if self.state == 'connected':
+        if state == 'connected':
             self._ensure_connected(connected_domain)
         else:
             self._ensure_disconnected(connected_domain)
@@ -161,9 +161,9 @@ class CteraFilerDirectoryServices(CteraFilerBase):
         return {k: v for k, v in config.__dict__.items() if not k.startswith("_")}
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerDirectoryServices().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

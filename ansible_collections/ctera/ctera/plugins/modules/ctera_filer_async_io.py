@@ -62,7 +62,7 @@ class CteraFilerAsyncIO(CteraFilerBase):
         ))
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to %s asynchronous I/O.' % ("enable" if self.parameters['enabled'] else "disable")
 
     def _execute(self):
@@ -78,9 +78,9 @@ class CteraFilerAsyncIO(CteraFilerBase):
         self.ansible_module.ctera_return_value().changed().msg('%s asynchronous I/O' % ("Enabled" if self.parameters['enabled'] else "Disabled"))
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerAsyncIO().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

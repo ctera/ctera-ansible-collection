@@ -72,7 +72,7 @@ class CteraFilerTelnet(CteraFilerBase):
             ]
         )
 
-    @property
+    @property  # pragma: no cover
     def _generic_failure_message(self):
         return 'Failed to %s Telnet.' % ("enable" if self.parameters['enabled'] else "disable")
 
@@ -84,9 +84,9 @@ class CteraFilerTelnet(CteraFilerBase):
         self.ansible_module.ctera_return_value().changed().msg('Telnet daemon %s' % ('enabled' if self.parameters['enabled'] else 'disabled'))
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerTelnet().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

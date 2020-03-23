@@ -87,7 +87,7 @@ import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as cter
 
 try:
     from cterasdk import gateway_enum
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -110,15 +110,15 @@ class CteraFilerSyslog(CteraFilerBase):
             ),
             required_if=[('enabled', True, ['server'])]
         )
-        self.enabled = self.parameters.pop('enabled')
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to update hostname'
 
     def _execute(self):
+        enabled = self.parameters.pop('enabled')
         current_config = self._get_current_config()
-        if self.enabled:
+        if enabled:
             self._ensure_enabled(current_config)
         else:
             self._ensure_disabled(current_config)
@@ -153,9 +153,9 @@ class CteraFilerSyslog(CteraFilerBase):
         return config_dict
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerSyslog().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

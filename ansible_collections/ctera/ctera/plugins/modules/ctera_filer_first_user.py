@@ -61,7 +61,7 @@ class CteraFilerFirstUser(CteraFilerBase):
         super().__init__(dict(email=dict(type='str', required=False)), login=False)
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'First user management failed'
 
     def _execute(self):
@@ -76,9 +76,9 @@ class CteraFilerFirstUser(CteraFilerBase):
         self.ansible_module.ctera_return_value().put(user=self.parameters['filer_user'])
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerFirstUser().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

@@ -59,7 +59,7 @@ from ansible_collections.ctera.ctera.plugins.module_utils.ctera_filer_share_conf
 
 try:
     from cterasdk import gateway_enum
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -88,9 +88,9 @@ class CteraFilerNfs(CteraFilerShareConfigBase):
         )
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerNfs().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

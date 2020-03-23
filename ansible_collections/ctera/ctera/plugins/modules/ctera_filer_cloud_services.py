@@ -110,7 +110,7 @@ from ansible_collections.ctera.ctera.plugins.module_utils.ctera_filer_base impor
 
 try:
     from cterasdk import CTERAException, tojsonstr, config
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -128,17 +128,18 @@ class CteraFilerCloudServices(CteraFilerBase):
             sso=dict(type='bool', required=False, default=False),
             trust_certificate=dict(type='bool', required=False, default=False)
         ))
-        self.state = self.parameters.pop('state')
-        if self.parameters['trust_certificate']:
-            config.connect['ssl'] = 'Trust'
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Cloud Services management failed.'
 
     def _execute(self):
+        if self.parameters['trust_certificate']:
+            config.connect['ssl'] = 'Trust'
+
+        state = self.parameters.pop('state')
         status = self._ctera_filer.services.get_status()
-        if self.state == 'connected':
+        if state == 'connected':
             self._ensure_connected(status)
         else:
             if status.connected:
@@ -203,9 +204,9 @@ class CteraFilerCloudServices(CteraFilerBase):
         return self.parameters['server'] != status.server_address
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerCloudServices().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

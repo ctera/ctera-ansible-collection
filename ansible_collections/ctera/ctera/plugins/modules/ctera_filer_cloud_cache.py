@@ -96,7 +96,7 @@ class CteraFilerCloudSync(CteraFilerBase):
         ))
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Cloud Cache management failed'
 
     def _execute(self):
@@ -161,18 +161,6 @@ class CteraFilerCloudSync(CteraFilerBase):
         else:
             messages['skipped'].append('Cloud sync was already disabled')
 
-    def _set_result(self, messages):
-        changed_message = ''
-        skipped_message = ''
-        if len(messages['changed']) > 0:
-            self.ansible_module.ctera_return_value().changed()
-            changed_message = "Changed: " + " ".join(messages['changed'])
-        if len(messages['skipped']) > 0:
-            if len(messages['changed']) == 0:
-                self.ansible_module.ctera_return_value().skipped()
-            skipped_message = "Skipped: " + " ".join(messages['skipped'])
-        self.ansible_module.ctera_return_value().msg(' '.join([changed_message, skipped_message]))
-
     def _handle_not_connected(self):
         self.ansible_module.ctera_return_value().msg('Filer is not connected to Cloud Services')
         if self.parameters['enabled']:
@@ -181,9 +169,9 @@ class CteraFilerCloudSync(CteraFilerBase):
             self.ansible_module.ctera_return_value().skipped()
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerCloudSync().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

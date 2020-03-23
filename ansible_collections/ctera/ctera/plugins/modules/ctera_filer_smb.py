@@ -103,9 +103,9 @@ class CteraFilerSmb(CteraFilerShareConfigBase):
         return {k: v for k, v in config.__dict__.items() if not k.startswith("_")}
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerSmb().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

@@ -86,7 +86,7 @@ from ansible_collections.ctera.ctera.plugins.module_utils.ctera_filer_base impor
 
 try:
     from cterasdk import CTERAException
-except ImportError:
+except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
@@ -102,15 +102,15 @@ class CteraFilerVolume(CteraFilerBase):
             device=dict(type='str', required=False),
             passphrase=dict(type='str', required=False, no_log=True)
         ))
-        self.state = self.parameters.pop('state')
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Volume management failed'
 
     def _execute(self):
-        volume = self._get_volume(self._ctera_filer)
-        if self.state == 'present':
+        state = self.parameters.pop('state')
+        volume = self._get_volume()
+        if state == 'present':
             self._ensure_present(volume)
         else:
             self._ensure_absent(volume)
@@ -141,10 +141,10 @@ class CteraFilerVolume(CteraFilerBase):
         else:
             self.ansible_module.ctera_return_value().skipped().msg('Volume already does not exist').put(name=self.parameters['name'])
 
-    def _get_volume(self, ctera_filer):
+    def _get_volume(self):
         volume = None
         try:
-            volume = ctera_filer.volumes.get(name=self.parameters['name'])
+            volume = self._ctera_filer.volumes.get(name=self.parameters['name'])
         except CTERAException as error:
             if error.response.code != 404:  # pylint: disable=no-member
                 raise
@@ -156,9 +156,9 @@ class CteraFilerVolume(CteraFilerBase):
         return volume_dict
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerVolume().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

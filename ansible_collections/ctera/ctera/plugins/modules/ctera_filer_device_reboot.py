@@ -61,7 +61,7 @@ class CteraFilerDeviceReboot(CteraFilerBase):
         )
 
     @property
-    def _generic_failure_message(self):
+    def _generic_failure_message(self):  # pragma: no cover
         return 'Failed to execute device reboot'
 
     def _execute(self):
@@ -73,9 +73,9 @@ class CteraFilerDeviceReboot(CteraFilerBase):
             self.ansible_module.ctera_return_value().msg('Rebooting device')
 
 
-def main():
+def main():  # pragma: no cover
     CteraFilerDeviceReboot().run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()
