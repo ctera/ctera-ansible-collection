@@ -107,3 +107,14 @@ class TestCteraEdge(BaseTest):  #pylint: disable=too-many-public-methods
         else:
             self.assertDictEqual(gateway_ansible_module.exit_dict, expected_dict)
             self.assertDictEqual(gateway_ansible_module.fail_dict, {})
+
+    def test_filer_trust_certificate_true(self):
+        self._test_filer_trust_certificate(True)
+
+    def test_filer_trust_certificate_false(self):
+        self._test_filer_trust_certificate(False)
+
+    def _test_filer_trust_certificate(self, trust):
+        ansible_module_mock.filer_trust_certificate = trust
+        ctera_edge.GatewayAnsibleModule(dict())
+        self.assertEqual(ctera_edge.config.http['ssl'], 'Trust' if trust else 'Consent')

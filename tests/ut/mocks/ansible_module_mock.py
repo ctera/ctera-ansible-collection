@@ -1,10 +1,13 @@
+filer_trust_certificate = False
+
 class AnsibleModuleMock():
 
     def __init__(self, _argument_spec, **_kwargs):
         self.params = dict(
             filer_host='192.168.1.1',
             filer_user='admin',
-            filer_password='password'
+            filer_password='password',
+            filer_trust_certificate=filer_trust_certificate
         )
         self.fail_dict = {}
         self.exit_dict = {}

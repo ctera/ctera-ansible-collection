@@ -24,7 +24,7 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as ctera_common
 
 try:
-    from cterasdk import Gateway, CTERAException, tojsonstr
+    from cterasdk import Gateway, CTERAException, tojsonstr, config
 except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
@@ -34,7 +34,8 @@ class GatewayAnsibleModule(AnsibleModule):
     default_argument_spec = {
         'filer_host': dict(type='str', required=True),
         'filer_user': dict(type='str', required=True),
-        'filer_password': dict(type='str', required=True, no_log=True)
+        'filer_password': dict(type='str', required=True, no_log=True),
+        'filer_trust_certificate': dict(type='bool', required=False, default=False)
     }
 
     def __init__(
@@ -55,6 +56,8 @@ class GatewayAnsibleModule(AnsibleModule):
                          required_if=required_if, required_by=required_by or {})
         if not ctera_common.HAS_CTERASDK:
             self.fail_json(msg=missing_required_lib('CTERASDK'), exception=ctera_common.CTERASDK_IMP_ERR)
+        if self.params['filer_trust_certificate']:
+            config.http['ssl'] = 'Trust'
         self._ctera_filer = Gateway(self.params['filer_host'])
         self._ctera_return_value = ctera_common.AnsibleReturnValue()
 

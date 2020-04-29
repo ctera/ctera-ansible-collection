@@ -19,6 +19,10 @@ options:
     description: Password of the user
     required: True
     type: str
+  filer_trust_certificate:
+    description: Trust unverified certificates
+    type: bool
+    default: False
 
 requirements:
   - A physical or virtual CTERA-Networks Gateway
