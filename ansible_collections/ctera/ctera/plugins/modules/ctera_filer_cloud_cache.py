@@ -53,27 +53,27 @@ options:
 
 EXAMPLES = '''
 - name: Enable Caching Gateway and start sync w/o refresh
-  ctera_filer_cloud_sync:
+  ctera_filer_cloud_cache:
     filer_host: "{{ ctera_filer_hostname }}"
     filer_user: "{{ ctera_filer_user }}"
     filer_password: "{{ ctera_filer_password }}"
 
 - name: Enable Caching Gateway and start sync with refresh
-  ctera_filer_cloud_sync:
+  ctera_filer_cloud_cache:
     refresh_folders: True
     filer_host: "{{ ctera_filer_hostname }}"
     filer_user: "{{ ctera_filer_user }}"
     filer_password: "{{ ctera_filer_password }}"
 
 - name: Enable Caching Gateway w/o sync
-  ctera_filer_cloud_sync:
+  ctera_filer_cloud_cache:
     sync_enabled: False
     filer_host: "{{ ctera_filer_hostname }}"
     filer_user: "{{ ctera_filer_user }}"
     filer_password: "{{ ctera_filer_password }}"
 
 - name: Disable Caching Gateway
-  ctera_filer_cloud_sync:
+  ctera_filer_cloud_cache:
     enabled: False
     filer_host: "{{ ctera_filer_hostname }}"
     filer_user: "{{ ctera_filer_user }}"

@@ -39,7 +39,7 @@ requirements:
 
 EXAMPLES = '''
 - name: first local user
-  ctera_filer__first_user:
+  ctera_filer_add_first_user:
     filer_host: "{{ ctera_filer_hostname }}"
     filer_user: "{{ ctera_filer_user }}"
     filer_password: "{{ ctera_filer_password }}"

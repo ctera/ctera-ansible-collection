@@ -38,7 +38,7 @@ requirements:
 '''
 
 EXAMPLES = '''
-- name: Set Hostname
+- name: Set Timezone
   ctera_filer_timezone:
     timezone: "(GMT-05:00) Eastern Time (US , Canada)"
     filer_host: "{{ ctera_filer_hostname }}"

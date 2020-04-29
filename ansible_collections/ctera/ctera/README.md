@@ -46,7 +46,7 @@ To use a module from CTERA collection, please reference the full namespace, coll
       filer_password: "{{ filer_password }}"
 ```
 
-Or you can add full namepsace and collecton name in the `collections` element:
+Or you can add full namepsace and collection name in the `collections` element:
 
 ```yaml
 ---

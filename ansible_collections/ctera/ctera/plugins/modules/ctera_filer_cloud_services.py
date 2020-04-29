@@ -77,7 +77,7 @@ requirements:
 
 EXAMPLES = '''
 - name: connect cloud services
-  ctera_filer_connect_cloud_services:
+  ctera_filer_cloud_services:
     server: portal.example.com
     user: admin
     password: admin
