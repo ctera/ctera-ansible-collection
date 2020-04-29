@@ -1,5 +1,6 @@
 # Ansible Collection for CTERA
 [![Build Status](https://travis-ci.com/ctera/ctera-ansible-collections.svg?branch=master)](https://travis-ci.com/ctera/ctera-ansible-collections)
+[![CI](https://github.com/ctera/ctera-ansible-collections/workflows/CI/badge.svg)](https://github.com/ctera/ctera-ansible-collections/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/ctera/ctera-ansible-collections/badge.svg?branch=master)](https://coveralls.io/github/ctera/ctera-ansible-collections?branch=master)
 
 This collection provides a series of Ansible modules and plugins for interacting with the [CTERA](https://www.ctera.com) Filer and Portal.
