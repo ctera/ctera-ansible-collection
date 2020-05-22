@@ -33,6 +33,8 @@ class GatewayAnsibleModule(AnsibleModule):
 
     default_argument_spec = {
         'filer_host': dict(type='str', required=True),
+        'filer_https': dict(type='bool', required=False, default=True),
+        'filer_port': dict(type='int', required=False),
         'filer_user': dict(type='str', required=True),
         'filer_password': dict(type='str', required=True, no_log=True),
         'filer_trust_certificate': dict(type='bool', required=False, default=False)
@@ -58,7 +60,7 @@ class GatewayAnsibleModule(AnsibleModule):
             self.fail_json(msg=missing_required_lib('CTERASDK'), exception=ctera_common.CTERASDK_IMP_ERR)
         if self.params['filer_trust_certificate']:
             config.http['ssl'] = 'Trust'
-        self._ctera_filer = Gateway(self.params['filer_host'])
+        self._ctera_filer = Gateway(self.params['filer_host'], port=self.params['filer_port'], https=self.params['filer_https'])
         self._ctera_return_value = ctera_common.AnsibleReturnValue()
 
     def ctera_filer(self, login=True):

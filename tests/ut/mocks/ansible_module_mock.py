@@ -6,6 +6,8 @@ class AnsibleModuleMock():
         self.params = dict(
             filer_host='192.168.1.1',
             filer_user='admin',
+            filer_https=True,
+            filer_port=None,
             filer_password='password',
             filer_trust_certificate=filer_trust_certificate
         )

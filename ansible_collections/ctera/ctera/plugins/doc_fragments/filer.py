@@ -11,6 +11,13 @@ options:
     description: IP Address or FQDN of the CTERA Networks Filer
     required: True
     type: str
+  filer_https:
+    description: Connect to the Filer using HTTPS
+    type: bool
+    default: True
+  filer_port:
+    description: Connection port to the Filer
+    type: int
   filer_user:
     description: User Name for communicating with the CTERA Networks Filer
     required: True

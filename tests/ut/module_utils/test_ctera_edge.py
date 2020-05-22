@@ -57,34 +57,34 @@ class TestCteraEdge(BaseTest):  #pylint: disable=too-many-public-methods
     def test_ctera_filer_with_login(self):
         self.gateway_object_mock.login = mock.MagicMock(return_value=None)
         gateway_ansible_module = ctera_edge.GatewayAnsibleModule(dict())
-        self.gateway_class_mock.assert_called_once_with('192.168.1.1')
+        self.gateway_class_mock.assert_called_once_with('192.168.1.1', https=True, port=None)
         gateway_ansible_module.ctera_filer()
         self.gateway_object_mock.login.assert_called_once_with('admin', 'password')
 
     def test_ctera_filer_login_failed(self):
         self.gateway_object_mock.login = mock.MagicMock(side_effect=CTERAException())
         gateway_ansible_module = ctera_edge.GatewayAnsibleModule(dict())
-        self.gateway_class_mock.assert_called_once_with('192.168.1.1')
+        self.gateway_class_mock.assert_called_once_with('192.168.1.1', https=True, port=None)
         gateway_ansible_module.ctera_filer()
         self.gateway_object_mock.login.assert_called_once_with('admin', 'password')
 
     def test_ctera_filer_no_login(self):
         self.gateway_object_mock.login = mock.MagicMock(return_value=None)
         gateway_ansible_module = ctera_edge.GatewayAnsibleModule(dict())
-        self.gateway_class_mock.assert_called_once_with('192.168.1.1')
+        self.gateway_class_mock.assert_called_once_with('192.168.1.1', https=True, port=None)
         gateway_ansible_module.ctera_filer(login=False)
         self.gateway_object_mock.login.assert_not_called()
 
     def test_ctera_filer_logout(self):
         self.gateway_object_mock.logout = mock.MagicMock(return_value=None)
         gateway_ansible_module = ctera_edge.GatewayAnsibleModule(dict())
-        self.gateway_class_mock.assert_called_once_with('192.168.1.1')
+        self.gateway_class_mock.assert_called_once_with('192.168.1.1', https=True, port=None)
         gateway_ansible_module.ctera_logout()
         self.gateway_object_mock.logout.assert_called_once_with()
 
     def test_ctera_return_value(self):
         gateway_ansible_module = ctera_edge.GatewayAnsibleModule(dict())
-        self.gateway_class_mock.assert_called_once_with('192.168.1.1')
+        self.gateway_class_mock.assert_called_once_with('192.168.1.1', https=True, port=None)
         ansible_return_value = gateway_ansible_module.ctera_return_value()
         self.assertEqual(self.ansible_return_value_object_mock, ansible_return_value)
 
@@ -99,7 +99,7 @@ class TestCteraEdge(BaseTest):  #pylint: disable=too-many-public-methods
         expected_dict = dict(msg='Success')
         self.ansible_return_value_object_mock.as_dict.return_value = expected_dict
         gateway_ansible_module = ctera_edge.GatewayAnsibleModule(dict())
-        self.gateway_class_mock.assert_called_once_with('192.168.1.1')
+        self.gateway_class_mock.assert_called_once_with('192.168.1.1', https=True, port=None)
         gateway_ansible_module.ctera_exit()
         if has_failed:
             self.assertDictEqual(gateway_ansible_module.exit_dict, {})
