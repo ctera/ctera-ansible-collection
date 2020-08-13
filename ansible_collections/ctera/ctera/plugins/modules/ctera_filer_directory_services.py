@@ -29,14 +29,14 @@ author:
 
 options:
   state:
-    description: Whether the Cloud Services by Connected, Disconnected
+    description: Whether the Edge Filer is Connected, Disconnected
     type: str
     choices:
       - connected
       - disconnected
     default: connected
   domain:
-    description: Active Directory Domain to connect to. Required if C(state) is connected
+    description: Active Directory domain to connect to. Required if C(state) is connected
     type: str
   username:
     description: User Name to for communicating with the Active Directory Service. Required if C(state) is connected
@@ -59,7 +59,7 @@ requirements:
 EXAMPLES = '''
 - name: Directory Services - Connected
   ctera_filer_directory_services:
-    host: www.example.com
+    domain: ctera.local
     user: admin
     pass: admin
     ctera_host: "{{ ctera_filer_hostname }}"
@@ -76,7 +76,7 @@ EXAMPLES = '''
 
 RETURN = '''
 domain:
-  description: Active Directory Domain connected to
+  description: Active Directory domain connected to
   returned: when state is connected, or when actualy disconnecting
   type: str
   sample: ad.example.com
