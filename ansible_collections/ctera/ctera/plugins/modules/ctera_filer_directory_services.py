@@ -29,7 +29,7 @@ author:
 
 options:
   state:
-    description: Whether the Edge Filer is Connected, Disconnected
+    description: Whether the Edge Filer is connected to an Active Directory domain
     type: str
     choices:
       - connected
