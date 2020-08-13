@@ -12,8 +12,9 @@ options:
   tenant:
     description:
     - Name of the tenant.
+    - For Global Admin operations set to "$admin"
     - Use default if not provided.
-    - Do not set for initialization or Global Admin operations
+    - Do not set for initialization operations
     type: str
 
 '''

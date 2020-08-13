@@ -31,9 +31,13 @@ class CteraPortalTestChild(ctera_portal_base.CteraPortalBase):
 class PortalsMock():
     def __init__(self):
         self.browse_tenant = None
+        self.browse_global_admin_called = False
 
     def browse(self, tenant):
         self.browse_tenant = tenant
+
+    def browse_global_admin(self):
+        self.browse_global_admin_called = True
 
 
 class PortalMock():
@@ -65,22 +69,27 @@ class TestCteraPortalBase(BaseTest):  #pylint: disable=too-many-public-methods
         self._obj_mock.ctera_exit.assert_called_once_with()
 
     def test_run_tenant(self):
-        for with_tenant in [True, False]:
-            self._test_run_tenant(with_tenant)
+        for tenant in [None, "test", "$admin"]:
+            self._test_run_tenant(tenant)
 
-    def _test_run_tenant(self, with_tenant):
+    def _test_run_tenant(self, tenant):
         self._obj_mock.ctera_logout.reset_mock()
         self._obj_mock.ctera_exit.reset_mock()
         portal_mock = PortalMock()
         runner = CteraPortalTestChild(True)
-        if with_tenant:
-            runner.parameters = dict(tenant='test')
+        runner.parameters = dict(tenant=tenant)
         self._obj_mock.ctera_portal = mock.MagicMock(return_value=portal_mock)
         runner.run()
         self._obj_mock.ctera_portal.assert_called_once_with(login=True)
-        if with_tenant:
-            self.assertEqual(portal_mock.portals.browse_tenant, 'test')
+        if tenant:
+            if tenant == '$admin':
+                self.assertTrue(portal_mock.portals.browse_global_admin_called)
+                self.assertIsNone(portal_mock.portals.browse_tenant)
+            else:
+                self.assertFalse(portal_mock.portals.browse_global_admin_called)
+                self.assertEqual(portal_mock.portals.browse_tenant, tenant)
         else:
+            self.assertFalse(portal_mock.portals.browse_global_admin_called)
             self.assertIsNone(portal_mock.portals.browse_tenant)
         self.assertTrue(runner.execute_called)
         self.assertFalse(runner.generic_failure_message_called)

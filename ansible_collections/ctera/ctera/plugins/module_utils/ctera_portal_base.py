@@ -25,6 +25,7 @@ from ansible_collections.ctera.ctera.plugins.module_utils.ctera_runner_base impo
 
 
 class CteraPortalBase(CteraRunnerBase):
+    GLOBAL_ADMIN_OPERATIONS_TENANT_NAME = "$admin"
 
     def __init__(self, ansible_module_args, supports_check_mode=False, required_if=None, login=True, required_by=None):
         super().__init__(
@@ -42,5 +43,8 @@ class CteraPortalBase(CteraRunnerBase):
         if self._login:
             tenant = self.parameters.pop('tenant', None)
             if tenant:
-                self._ctera_portal.portals.browse(tenant)
+                if tenant == CteraPortalBase.GLOBAL_ADMIN_OPERATIONS_TENANT_NAME:
+                    self._ctera_portal.portals.browse_global_admin()
+                else:
+                    self._ctera_portal.portals.browse(tenant)
         super().run()
