@@ -76,7 +76,14 @@ class TestCteraFilerShare(BaseTest):
             export_to_nfs=True,
             export_to_pc_agent=True,
             export_to_rsync=True,
-            indexed=True
+            indexed=True,
+            trusted_nfs_clients=[
+                {
+                    'address': "192.168.0.0",
+                    'netmask': "255.255.255.0",
+                    'perm': "ReadWrite"
+                }
+            ]
         )
         share_object_dict = copy.deepcopy(expected_share_dict)
         share_object_dict['volume'] = 'main'
@@ -88,6 +95,13 @@ class TestCteraFilerShare(BaseTest):
         share_object_dict['exportToNFS'] = share_object_dict.pop('export_to_nfs')
         share_object_dict['exportToPCAgent'] = share_object_dict.pop('export_to_pc_agent')
         share_object_dict['exportToRSync'] = share_object_dict.pop('export_to_rsync')
+        share_object_dict['trustedNFSClients'] = [
+            munch.Munch({
+                'address': elem['address'],
+                'netmask': elem['netmask'],
+                'accessLevel': elem['perm']
+            }) for elem in share_object_dict.pop('trusted_nfs_clients')
+        ]
         share = ctera_filer_share.CteraFilerShare()
         share.parameters = dict(name='demo')
         share._ctera_filer.shares.get = mock.MagicMock(return_value=munch.Munch(share_object_dict))
@@ -146,6 +160,7 @@ class TestCteraFilerShare(BaseTest):
 
     def test__add_share(self):  # pylint: disable=no-self-use
         acl_dict = dict(principal_type='LocalGroup', name='Admins', perm='ReadWrite')
+        trusted_nfs_clients_dict = dict(address='192.168.0.0', netmask='255.255.0.0', perm='ReadWrite')
         add_params = dict(
             name='demo',
             directory='/main/public/demo',
@@ -159,16 +174,19 @@ class TestCteraFilerShare(BaseTest):
             export_to_nfs=True,
             export_to_pc_agent=True,
             export_to_rsync=True,
-            indexed=True
+            indexed=True,
+            trusted_nfs_clients=[trusted_nfs_clients_dict]
         )
         expected_params = copy.deepcopy(add_params)
         expected_params['acl'] = mock.ANY
+        expected_params['trusted_nfs_clients'] = mock.ANY
 
         share = ctera_filer_share.CteraFilerShare()
         share.parameters = add_params
         share._add_share()
         share._ctera_filer.shares.add.assert_called_with(**expected_params)
         self._verify_acl_dict(acl_dict, share._ctera_filer.shares.add.call_args[1]['acl'][0])
+        self._verify_trusted_nfs_clients_dict(trusted_nfs_clients_dict, share._ctera_filer.shares.add.call_args[1]['trusted_nfs_clients'][0])
 
     def test__handle_modify(self):
         for change_attributes in [True, False]:
@@ -189,19 +207,28 @@ class TestCteraFilerShare(BaseTest):
             export_to_nfs=True,
             export_to_pc_agent=True,
             export_to_rsync=True,
-            indexed=True
+            indexed=True,
+            trusted_nfs_clients=[]
         )
         desired_attributes = copy.deepcopy(current_attributes)
         if change_attributes:
             desired_acl_dict = dict(principal_type='LocalGroup', name='Everyone', perm='ReadOnly')
+            desired_trusted_nfs_clients = dict(address='192.168.1.0', netmask='255.255.255.0', perm='ReadOnly')
             desired_attributes['export_to_afp'] = False
             desired_attributes['acl'] = [desired_acl_dict]
+            desired_attributes['trusted_nfs_clients'] = [desired_trusted_nfs_clients]
         share = ctera_filer_share.CteraFilerShare()
         share.parameters = desired_attributes
         share._handle_modify(current_attributes)
         if change_attributes:
-            share._ctera_filer.shares.modify.assert_called_with(desired_attributes['name'], export_to_afp=desired_attributes['export_to_afp'], acl=mock.ANY)
+            share._ctera_filer.shares.modify.assert_called_with(
+                desired_attributes['name'],
+                export_to_afp=desired_attributes['export_to_afp'],
+                acl=mock.ANY,
+                trusted_nfs_clients=mock.ANY
+            )
             self._verify_acl_dict(desired_acl_dict, share._ctera_filer.shares.modify.call_args[1]['acl'][0])
+            self._verify_trusted_nfs_clients_dict(desired_trusted_nfs_clients, share._ctera_filer.shares.modify.call_args[1]['trusted_nfs_clients'][0])
         else:
             share._ctera_filer.shares.modify.assert_not_called()
 
@@ -210,6 +237,12 @@ class TestCteraFilerShare(BaseTest):
         self.assertEqual(expected_acl.principal_type, actual_acl.principal_type)
         self.assertEqual(expected_acl.name, actual_acl.name)
         self.assertEqual(expected_acl.perm, actual_acl.perm)
+
+    def _verify_trusted_nfs_clients_dict(self, expected_dict, actual_obj):
+        expected_obj = gateway_types.NFSv3AccessControlEntry(**expected_dict)
+        self.assertEqual(expected_obj.address, actual_obj.address)
+        self.assertEqual(expected_obj.netmask, actual_obj.netmask)
+        self.assertEqual(expected_obj.perm, actual_obj.perm)
 
     def test_add_no_directory(self):
         share = ctera_filer_share.CteraFilerShare()

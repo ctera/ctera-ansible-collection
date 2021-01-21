@@ -115,6 +115,28 @@ options:
   comment:
     description: Comment
     type: str
+  trusted_nfs_clients:
+    description: Trusted NFS v3 clients
+    type: list
+    elements: dict
+    suboptions:
+      address:
+        description: IP address, hostname or fully qualified domain name of client machine
+        type: str
+        required: True
+      netmask:
+        description: Subnet mask
+        type: str
+        required: True
+      perm:
+        description: File access permission
+        type: str
+        required: True
+        choices:
+        - ReadWrite
+        - ReadOnly
+        - None
+
 '''
 
 EXAMPLES = '''
@@ -166,7 +188,8 @@ class CteraFilerShare(CteraFilerBase):
         'export_to_nfs',
         'export_to_pc_agent',
         'export_to_rsync',
-        'indexed'
+        'indexed',
+        'trusted_nfs_clients'
     ]
 
     def __init__(self):
@@ -193,7 +216,16 @@ class CteraFilerShare(CteraFilerBase):
             export_to_nfs=dict(type='bool', required=False, default=False),
             export_to_pc_agent=dict(type='bool', required=False, default=False),
             export_to_rsync=dict(type='bool', required=False, default=False),
-            indexed=dict(type='bool', required=False, default=False)
+            indexed=dict(type='bool', required=False, default=False),
+            trusted_nfs_clients=dict(
+                type='list',
+                elements='dict',
+                options=dict(
+                    address=dict(required=True),
+                    netmask=dict(required=True),
+                    perm=dict(required=True, choices=['ReadWrite', 'ReadOnly', 'None']),
+                )
+            )
         ))
 
     @property
@@ -229,15 +261,22 @@ class CteraFilerShare(CteraFilerBase):
             raise CTERAException(message="Cannot create new share without a directory")
         if add_params.get('acl') is not None:
             add_params['acl'] = [self._make_ShareAccessControlEntry(acl_entry) for acl_entry in add_params['acl']]
+        if add_params.get('trusted_nfs_clients') is not None:
+            add_params['trusted_nfs_clients'] = [
+                self._make_NFSv3AccessControlEntry(trusted_nfs_clients_entry) for trusted_nfs_clients_entry in add_params['trusted_nfs_clients']
+            ]
         self._ctera_filer.shares.add(**add_params)
         self.ansible_module.ctera_return_value().changed().msg('Share created').put(name=self.parameters['name'])
 
     def _handle_modify(self, share):
         modified_attributes = ctera_common.get_modified_attributes(share, self.parameters)
         if modified_attributes:
-            acl_changes = modified_attributes.get('acl')
-            if acl_changes is not None:
-                modified_attributes['acl'] = [self._make_ShareAccessControlEntry(acl_entry) for acl_entry in acl_changes]
+            if modified_attributes.get('acl') is not None:
+                modified_attributes['acl'] = [self._make_ShareAccessControlEntry(acl_entry) for acl_entry in modified_attributes['acl']]
+            if modified_attributes.get('trusted_nfs_clients') is not None:
+                modified_attributes['trusted_nfs_clients'] = [
+                    self._make_NFSv3AccessControlEntry(trusted_nfs_clients_entry) for trusted_nfs_clients_entry in modified_attributes['trusted_nfs_clients']
+                ]
             self._ctera_filer.shares.modify(self.parameters['name'], **modified_attributes)
             self.ansible_module.ctera_return_value().changed().msg('Share modified').put(name=self.parameters['name'])
         else:
@@ -255,6 +294,14 @@ class CteraFilerShare(CteraFilerBase):
         return gateway_types.ShareAccessControlEntry(principal_type=acl_dict['principal_type'], name=acl_dict['name'], perm=acl_dict['perm'])
 
     @staticmethod
+    def _make_NFSv3AccessControlEntry(trusted_nfs_clients_dict):
+        return gateway_types.NFSv3AccessControlEntry(
+            address=trusted_nfs_clients_dict['address'],
+            netmask=trusted_nfs_clients_dict['netmask'],
+            perm=trusted_nfs_clients_dict['perm']
+        )
+
+    @staticmethod
     def _to_share_dict(share_obj):
         share_dict = {}
         share_dict['name'] = share_obj.name
@@ -270,6 +317,9 @@ class CteraFilerShare(CteraFilerBase):
         share_dict['export_to_pc_agent'] = share_obj.exportToPCAgent
         share_dict['export_to_rsync'] = share_obj.exportToRSync
         share_dict['indexed'] = share_obj.indexed
+        share_dict['trusted_nfs_clients'] = [
+            CteraFilerShare._to_trusted_nfs_clients_dict(trusted_nfs_clients_entry) for trusted_nfs_clients_entry in share_obj.trustedNFSClients
+        ]
         return share_dict
 
     @staticmethod
@@ -284,6 +334,14 @@ class CteraFilerShare(CteraFilerBase):
             name = acl_obj.principal2.name
         acl_dict['name'] = name
         return acl_dict
+
+    @staticmethod
+    def _to_trusted_nfs_clients_dict(trusted_nfs_clients_obj):
+        return {
+            'address': trusted_nfs_clients_obj.address,
+            'netmask': trusted_nfs_clients_obj.netmask,
+            'perm': trusted_nfs_clients_obj.accessLevel
+        }
 
 
 def main():  # pragma: no cover
