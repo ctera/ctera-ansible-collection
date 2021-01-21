@@ -1,8 +1,9 @@
 import unittest.mock as mock
 
 from ansible_collections.ctera.ctera.plugins.module_utils.ctera_common import AnsibleReturnValue
+from ansible_collections.ctera.ctera.plugins.module_utils.ctera_runner_base import CteraRunnerBase
 
-class CteraFilerBaseMock():
+class CteraPortalBaseMock(CteraRunnerBase):
     def __init__(self, _argument_spec, **_kwargs):
         self._ctera_portal = mock.MagicMock()
         self._ctera_portal.users = mock.MagicMock()
@@ -27,7 +28,7 @@ class CteraFilerBaseMock():
 
 def mock_bases(test, klass):
     original_bases = klass.__bases__
-    klass.__bases__ = (CteraFilerBaseMock,)
+    klass.__bases__ = (CteraPortalBaseMock,)
     test.addCleanup(restore_bases, klass, original_bases)
 
 

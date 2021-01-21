@@ -1,8 +1,9 @@
 import unittest.mock as mock
 
 from ansible_collections.ctera.ctera.plugins.module_utils.ctera_common import AnsibleReturnValue
+from ansible_collections.ctera.ctera.plugins.module_utils.ctera_runner_base import CteraRunnerBase
 
-class CteraFilerBaseMock():
+class CteraFilerBaseMock(CteraRunnerBase):
     def __init__(self, _argument_spec, **_kwargs):
         self._ctera_filer = mock.MagicMock()
         self._ctera_filer.aio = mock.MagicMock()
