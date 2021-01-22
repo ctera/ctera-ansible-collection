@@ -99,7 +99,6 @@ class CteraPortalTenant(CteraPortalBase):
         return 'Tenant Management failed'
 
     def _execute(self):
-        self._ctera_portal.portals.browse_global_admin()
         state = self.parameters.pop('state')
         tenant = self._get_tenant()
         if state == 'present':
