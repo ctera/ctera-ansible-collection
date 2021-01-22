@@ -167,6 +167,9 @@ def get_modified_attributes(current, desired, get_list_diff=False):
                 modified_list = compare_lists(value, desired[key], get_list_diff)  # get modified list from current and desired
                 if modified_list:
                     modified[key] = modified_list
+            elif isinstance(value, dict):
+                if value != desired[key]:
+                    modified[key] = desired[key]
             elif cmp(value, desired[key]) != 0:
                 modified[key] = desired[key]
     return modified
