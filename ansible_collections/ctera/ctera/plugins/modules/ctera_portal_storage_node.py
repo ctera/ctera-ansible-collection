@@ -47,13 +47,13 @@ options:
         required: True
         choices:
         - Azure
-        - ScalityS3
-        - S3
-        - CleverSafeS3
-        - GenericS3
+        - Scality
+        - AWS
+        - ICOS
+        - S3Compatible
         - Nutanix
-        - WasabiS3
-        - GoogleS3
+        - Wasabi
+        - Google
       bucket:
         description: Name of the storage node bucket
         type: str
@@ -159,7 +159,7 @@ class CteraPortalStorageNode(CteraPortalBase):
                 state=dict(choices=['present', 'absent'], default='present'),
                 name=dict(required=True),
                 bucket_info=dict(type='dict', options=dict(
-                    bucket_type=dict(required=True, choices=['Azure', 'ScalityS3', 'S3', 'CleverSafeS3', 'GenericS3', 'Nutanix', 'WasabiS3', 'GoogleS3']),
+                    bucket_type=dict(required=True, choices=['Azure', 'Scality', 'AWS', 'ICOS', 'S3Compatible', 'Nutanix', 'Wasabi', 'Google']),
                     bucket=dict(required=True),
                     access_key=dict(required=True),
                     secret_key=dict(required=True, no_log=True),
@@ -180,6 +180,7 @@ class CteraPortalStorageNode(CteraPortalBase):
         state = self.parameters.pop('state')
         storage_node = self._get_storage_node()
         if state == 'present':
+            self.parameters['bucket_info']['bucket_type'] = portal_enum.BucketType.__dict__[self.parameters['bucket_info']['bucket_type']]
             self._ensure_present(storage_node)
         else:
             self._ensure_absent(storage_node)

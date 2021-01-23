@@ -47,16 +47,23 @@ class TestCteraPortalStorageNode(BaseTest):
         for is_present in [True, False]:
             self._test__execute(is_present)
 
-    @staticmethod
-    def _test__execute(is_present):
+    def _test__execute(self, is_present):
         storage_node = ctera_portal_storage_node.CteraPortalStorageNode()
-        storage_node.parameters = dict(state='present' if is_present else 'absent')
+        if is_present:
+            storage_node.parameters = dict(
+                state='present',
+                bucket_info=dict(bucket_type='AWS')
+            )
+        else:
+            storage_node.parameters = dict(state='absent')
+
         storage_node._get_storage_node = mock.MagicMock(return_value=dict())
         storage_node._ensure_present = mock.MagicMock()
         storage_node._ensure_absent = mock.MagicMock()
         storage_node._execute()
         if is_present:
             storage_node._ensure_present.assert_called_once_with(mock.ANY)
+            self.assertEqual(storage_node.parameters['bucket_info']['bucket_type'], portal_enum.BucketType.AWS)
             storage_node._ensure_absent.assert_not_called()
         else:
             storage_node._ensure_absent.assert_called_once_with(mock.ANY)
@@ -181,7 +188,7 @@ class TestCteraPortalStorageNode(BaseTest):
                 desired_attributes['read_only'] = True
         storage_node = ctera_portal_storage_node.CteraPortalStorageNode()
         storage_node.parameters = desired_attributes
-        storage_node._ensure_present(current_attributes)
+        storage_node._handle_modify(current_attributes)
         if change_attributes:
             if change_bucket_info:
                 storage_node._ctera_portal.buckets.modify.assert_not_called()
