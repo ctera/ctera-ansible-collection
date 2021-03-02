@@ -125,7 +125,7 @@ class CteraPortalCloudFolder(CteraPortalBase):
         try:
             cloud_folder = self._ctera_portal.cloudfs.find(
                 self.parameters['name'],
-                self.parameters['owner']['name'],
+                self._make_user_account(self.parameters['owner']),
                 ['name', 'group', 'owner']
             )
         except CTERAException:
