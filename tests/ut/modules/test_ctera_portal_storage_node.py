@@ -247,6 +247,10 @@ class TestCteraPortalStorageNode(BaseTest):
             {
                 'bucket_type': portal_enum.BucketType.Google,
                 'bucket_object_type': portal_types.Google
+            },
+            {
+                'bucket_type': portal_enum.BucketType.NetAppStorageGRID,
+                'bucket_object_type': portal_types.NetAppStorageGRID
             }
         ]
         for case in cases:

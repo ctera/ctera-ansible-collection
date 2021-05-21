@@ -54,6 +54,7 @@ options:
         - Nutanix
         - Wasabi
         - Google
+        - NetAppStorageGRID
       bucket:
         description: Name of the storage node bucket
         type: str
@@ -159,7 +160,7 @@ class CteraPortalStorageNode(CteraPortalBase):
                 state=dict(choices=['present', 'absent'], default='present'),
                 name=dict(required=True),
                 bucket_info=dict(type='dict', options=dict(
-                    bucket_type=dict(required=True, choices=['Azure', 'Scality', 'AWS', 'ICOS', 'S3Compatible', 'Nutanix', 'Wasabi', 'Google']),
+                    bucket_type=dict(required=True, choices=['Azure', 'Scality', 'AWS', 'ICOS', 'S3Compatible', 'Nutanix', 'Wasabi', 'Google', 'NetAppStorageGRID']),
                     bucket=dict(required=True),
                     access_key=dict(required=True),
                     secret_key=dict(required=True, no_log=True),
@@ -232,6 +233,8 @@ class CteraPortalStorageNode(CteraPortalBase):
             bucket_object_type = portal_types.Wasabi
         elif bucket_type == portal_enum.BucketType.Google:
             bucket_object_type = portal_types.Google
+        elif bucket_type == portal_enum.BucketType.NetAppStorageGRID:
+            bucket_object_type = portal_types.NetAppStorageGRID
         else:
             raise UnsupportedBucketType("Provided bucket type is not supported %s" % bucket_type)
         return bucket_object_type
