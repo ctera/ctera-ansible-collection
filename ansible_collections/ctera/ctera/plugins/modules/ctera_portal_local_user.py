@@ -33,13 +33,9 @@ options:
     type: str
     choices: ['present', 'absent']
     default: 'present'
-  username:
-    description: The current name of the user
-    required: True
-    type: str
   name:
-    description: The new name of the user
-    required: False
+    description: The name of the user
+    required: True
     type: str
   email:
     description: The e-mail address of the user
@@ -84,11 +80,10 @@ options:
 EXAMPLES = '''
 - name: create local user
   ctera_portal_local_user:
-    username: 'alice'
-    name: 'bruce'
-    email: 'bwayne@gotham.com'
-    first_name: 'Bruce'
-    last_name: 'Wayne'
+    name: 'alice'
+    email: 'walice@wonderland.com'
+    first_name: 'Alice'
+    last_name: 'Wonderland'
     password: 'su@p3rsecret!!'
     role: 'ReadWriteAdmin'
     ctera_host: "{{ ctera_portal_hostname }}"
