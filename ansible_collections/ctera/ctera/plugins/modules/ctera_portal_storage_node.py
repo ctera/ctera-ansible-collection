@@ -160,9 +160,10 @@ class CteraPortalStorageNode(CteraPortalBase):
                 state=dict(choices=['present', 'absent'], default='present'),
                 name=dict(required=True),
                 bucket_info=dict(type='dict', options=dict(
-                    bucket_type=dict(required=True, choices=['Azure', 'Scality', 'AWS', 'ICOS', 'S3Compatible', 'Nutanix', 'Wasabi', 'Google', 'NetAppStorageGRID']),
+                    bucket_type=dict(required=True, choices=['Azure', 'Scality', 'AWS', 'ICOS',
+                                                             'S3Compatible', 'Nutanix', 'Wasabi', 'Google', 'NetAppStorageGRID']),
                     bucket=dict(required=True),
-                    access_key=dict(required=True),
+                    access_key=dict(required=True, no_log=True),
                     secret_key=dict(required=True, no_log=True),
                     endpoint=dict(),
                     https=dict(type='bool'),

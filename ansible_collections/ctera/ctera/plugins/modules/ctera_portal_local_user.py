@@ -33,9 +33,13 @@ options:
     type: str
     choices: ['present', 'absent']
     default: 'present'
-  name:
-    description: The name of the user
+  username:
+    description: The current name of the user
     required: True
+    type: str
+  name:
+    description: The new name of the user
+    required: False
     type: str
   email:
     description: The e-mail address of the user
@@ -80,10 +84,11 @@ options:
 EXAMPLES = '''
 - name: create local user
   ctera_portal_local_user:
-    name: 'alice'
-    email: 'walice@wonderland.com'
-    first_name: 'Alice'
-    last_name: 'Wonderland'
+    username: 'alice'
+    name: 'bruce'
+    email: 'bwayne@gotham.com'
+    first_name: 'Bruce'
+    last_name: 'Wayne'
     password: 'su@p3rsecret!!'
     role: 'ReadWriteAdmin'
     ctera_host: "{{ ctera_portal_hostname }}"
@@ -125,7 +130,7 @@ class CteraPortalLocalUser(CteraPortalBase):
                 role=dict(type='str', required=False, choices=['Disabled', 'EndUser', 'ReadWriteAdmin', 'ReadOnlyAdmin', 'Support'], default='Disabled'),
                 company=dict(type='str', required=False),
                 comment=dict(type='str', required=False),
-                password_change=dict(type='raw', required=False, default=False)
+                password_change=dict(type='raw', required=False, default=False, no_log=True)
             )
         )
 
