@@ -65,7 +65,7 @@ class CteraPortalInitApplication(CteraPortalBase):
         super().__init__(
             dict(
                 ipaddr=dict(type='str', required=True),
-                secret=dict(type='str', required=True, no_log=True),
+                secret=dict(type='str', required=True, no_log=True)
             ),
             login=False
         )
