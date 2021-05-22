@@ -15,10 +15,10 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = '''
 ---
-module: ctera_portal_init_application_server
-short_description: CTERA-Networks Portal Application Server Initialization
+module: ctera_portal_init_replication_server
+short_description: CTERA-Networks Portal Database Replication Server Initialization
 description:
-    - Initialize Portal Application Server
+    - Initialize Portal Database Replication Server
 extends_documentation_fragment:
     - ctera.ctera.vportal
 
@@ -35,14 +35,19 @@ options:
     description: A password or a PEM-encoded private key
     required: True
     type: str
+  replicate_from:
+    description: Name of a CTERA Portal database server to replicate from
+    required: False
+    type: str
 
 '''
 
 EXAMPLES = '''
-- name: initialize portal application server
-  ctera_portal_init_application_server:
+- name: initialize portal database replication server
+  ctera_portal_init_replication_server:
     ipaddr: 192.168.1.1
     secret: 'su@p3rsecret!!'
+    replicate_from: server
     ctera_host: "{{ ctera_app_hostname }}"
     ctera_user: "{{ ctera_app_user }}"
     ctera_password: "{{ ctera_app_password }}"
@@ -58,14 +63,15 @@ except ImportError:  # pragma: no cover
 from ansible_collections.ctera.ctera.plugins.module_utils.ctera_portal_base import CteraPortalBase
 
 
-class CteraPortalInitApplication(CteraPortalBase):
-    _configure_params = ['ipaddr', 'secret']
+class CteraPortalInitReplication(CteraPortalBase):
+    _configure_params = ['ipaddr', 'secret', 'replicate_from']
 
     def __init__(self):
         super().__init__(
             dict(
                 ipaddr=dict(type='str', required=True),
                 secret=dict(type='str', required=True, no_log=True),
+                replicate_from=dict(type='str', required=False),
             ),
             login=False
         )
@@ -76,21 +82,21 @@ class CteraPortalInitApplication(CteraPortalBase):
 
     def _execute(self):
         if self._is_already_configured():
-            self.ansible_module.ctera_return_value().skipped().msg('The Portal Application Server is already configured ')
+            self.ansible_module.ctera_return_value().skipped().msg('The Portal Database Replication Server is already configured ')
             return
-        self._configure_application_server()
+        self._configure_replication_server()
 
     def _is_already_configured(self):
         setup_status = self._ctera_portal.setup.get_setup_status()
         return setup_status.wizard == portal_enum.SetupWizardStage.Finish
 
-    def _configure_application_server(self):
-        configure_params = {k: v for k, v in self.parameters.items() if k in CteraPortalInitApplication._configure_params}
-        self._ctera_portal.setup.init_application_server(**configure_params)
+    def _configure_replication_server(self):
+        configure_params = {k: v for k, v in self.parameters.items() if k in CteraPortalInitReplication._configure_params}
+        self._ctera_portal.setup.init_replication_server(**configure_params)
 
 
 def main():  # pragma: no cover
-    CteraPortalInitApplication().run()
+    CteraPortalInitReplication().run()
 
 
 if __name__ == '__main__':  # pragma: no cover

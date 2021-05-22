@@ -33,16 +33,16 @@ except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
 
 
-from ansible_collections.ctera.ctera.plugins.modules.ctera_portal_init_application_server import CteraPortalInitApplication
+from ansible_collections.ctera.ctera.plugins.modules.ctera_portal_init_replication_server import CteraPortalInitReplication
 import tests.ut.mocks.ctera_portal_base_mock as ctera_portal_base_mock
 from tests.ut.base import BaseTest
 
 
-class TestCteraPortalInitApplication(BaseTest):
+class TestCteraPortalInitReplication(BaseTest):
 
     def setUp(self):
         super().setUp()
-        ctera_portal_base_mock.mock_bases(self, CteraPortalInitApplication)
+        ctera_portal_base_mock.mock_bases(self, CteraPortalInitReplication)
 
     def test__execute(self):
         for is_configured in [True, False]:
@@ -52,35 +52,36 @@ class TestCteraPortalInitApplication(BaseTest):
     def _test__execute(is_configured):
         init_master = CteraPortalInitApplication()
         init_master._is_already_configured = mock.MagicMock(return_value=is_configured)
-        init_master._configure_application_server = mock.MagicMock()
+        init_master._configure_replication_server = mock.MagicMock()
         init_master._execute()
         if is_configured:
-            init_master._configure_application_server.assert_not_called()
+            init_master._configure_replication_server.assert_not_called()
         else:
-            init_master._configure_application_server.assert_called_once_with()
+            init_master._configure_replication_server.assert_called_once_with()
 
     def test__is_already_configured(self):
         for wizard_state in [v for k, v in portal_enum.SetupWizardStage.__dict__.items() if not k.startswith('_')]:
             self._test__is_already_configured(wizard_state)
 
     def _test__is_already_configured(self, wizard_state):
-        init_master = CteraPortalInitApplication()
+        init_master = CteraPortalInitReplication()
         init_master._ctera_portal.setup.get_setup_status = mock.MagicMock(return_value=munch.Munch(dict(wizard=wizard_state)))
         is_configured = init_master._is_already_configured()
         init_master._ctera_portal.setup.get_setup_status.assert_called_once_with()
         self.assertEqual(is_configured, wizard_state == portal_enum.SetupWizardStage.Finish)
 
     @staticmethod
-    def test__configure_application_server():
+    def test__configure_replication_server():
         parameters = dict(
             ctera_host="192.168.1.2",
             ipaddr="192.168.1.1",
             secret="BestSecr3tEver"
+            replicate_from="server"
         )
         create_params = copy.deepcopy(parameters)
         create_params.pop('ctera_host')
-        init_master = CteraPortalInitApplication()
+        init_master = CteraPortalInitReplication()
         init_master.parameters = parameters
-        init_master._ctera_portal.setup.init_application_server = mock.MagicMock()
-        init_master._configure_application_server()
-        init_master._ctera_portal.setup.init_application_server.assert_called_once_with(**create_params)
+        init_master._ctera_portal.setup.init_replication_server = mock.MagicMock()
+        init_master._configure_replication_server()
+        init_master._ctera_portal.setup.init_replication_server.assert_called_once_with(**create_params)

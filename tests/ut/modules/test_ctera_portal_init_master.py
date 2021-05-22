@@ -37,7 +37,7 @@ import tests.ut.mocks.ctera_portal_base_mock as ctera_portal_base_mock
 from tests.ut.base import BaseTest
 
 
-class TestCteraPortalLocalUser(BaseTest):
+class TestCteraPortalInitMaster(BaseTest):
 
     def setUp(self):
         super().setUp()
