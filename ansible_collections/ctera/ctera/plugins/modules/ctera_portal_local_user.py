@@ -125,7 +125,7 @@ class CteraPortalLocalUser(CteraPortalBase):
                 role=dict(type='str', required=False, choices=['Disabled', 'EndUser', 'ReadWriteAdmin', 'ReadOnlyAdmin', 'Support'], default='Disabled'),
                 company=dict(type='str', required=False),
                 comment=dict(type='str', required=False),
-                password_change=dict(type='raw', required=False, default=False)
+                password_change=dict(type='raw', required=False, default=False, no_log=True)
             )
         )
 
