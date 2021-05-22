@@ -50,7 +50,7 @@ class TestCteraPortalInitReplication(BaseTest):
 
     @staticmethod
     def _test__execute(is_configured):
-        init_master = CteraPortalInitApplication()
+        init_master = CteraPortalInitReplication()
         init_master._is_already_configured = mock.MagicMock(return_value=is_configured)
         init_master._configure_replication_server = mock.MagicMock()
         init_master._execute()
@@ -75,7 +75,7 @@ class TestCteraPortalInitReplication(BaseTest):
         parameters = dict(
             ctera_host="192.168.1.2",
             ipaddr="192.168.1.1",
-            secret="BestSecr3tEver"
+            secret="BestSecr3tEver",
             replicate_from="server"
         )
         create_params = copy.deepcopy(parameters)
