@@ -75,10 +75,11 @@ level:
   type: str
   sample: 'linear'
 members:
-  description: The drive names that are members of the array
+  description: The drive names that are members of the array. If not passed, an array will be created using all available drives
   returned: when state is present
   type: list
   sample: array
+  required: False
 '''
 
 import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as ctera_common
@@ -99,9 +100,9 @@ class CteraFilerArray(CteraFilerBase):
                 state=dict(required=False, choices=['present', 'absent'], default='present'),
                 array_name=dict(type='str', required=True),
                 level=dict(type='str', choices=['linear', '0', '1', '5', '6']),
-                members=dict(type='list', elements='str')
+                members=dict(type='list', elements='str', required=False)
             ),
-            required_if=[('state', 'present', ['level', 'members'])]
+            required_if=[('state', 'present', ['level'])]
         )
 
     @property
