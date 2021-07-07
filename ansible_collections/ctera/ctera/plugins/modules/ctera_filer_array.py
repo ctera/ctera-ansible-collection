@@ -75,7 +75,7 @@ level:
   type: str
   sample: 'linear'
 members:
-  description: The drive names that are members of the array. If not passed, an array will be created using all available drives
+  description: The drive names that are members of the array
   returned: when state is present
   type: list
   sample: array
