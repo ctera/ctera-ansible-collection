@@ -79,7 +79,6 @@ members:
   returned: when state is present
   type: list
   sample: array
-  required: False
 '''
 
 import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as ctera_common
