@@ -81,7 +81,7 @@ class CteraPortalCertificate(CteraPortalBase):
     def __init__(self):
         super().__init__(
             dict(
-                private_key=dict(type='str', required=True),
+                private_key=dict(type='str', required=True, no_log=True),
                 server_certificate=dict(type='str', required=True),
                 certificate_chain=dict(type='list', elements='str', required=True),
                 force_update=dict(type='bool', default=False)
