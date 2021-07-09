@@ -95,7 +95,7 @@ class CteraPortalCertificate(CteraPortalBase):
     def _execute(self):
         current_cert_thumbprint = self._get_thumbprint()
         new_cert_thumbprint = X509Certificate.load_certificate(self.parameters['server_certificate']).sha1_fingerprint
-        if self.parameters.pop('force_update') or current_cert_thumbprint != new_cert_thumbprint:
+        if self.parameters['force_update'] or current_cert_thumbprint != new_cert_thumbprint:
             self._import_certificate()
             self.ansible_module.ctera_return_value().changed().msg('SSL certificate was updated')
         else:
@@ -105,9 +105,9 @@ class CteraPortalCertificate(CteraPortalBase):
         return self._ctera_portal.ssl.thumbprint
 
     def _import_certificate(self):
-        private_key = self.parameters.pop('private_key')
-        server_certificate = self.parameters.pop('server_certificate')
-        certificate_chain = self.parameters.pop('certificate_chain')
+        private_key = self.parameters['private_key']
+        server_certificate = self.parameters['server_certificate']
+        certificate_chain = self.parameters['certificate_chain']
         certificate_chain.insert(0, server_certificate)
         self._ctera_portal.ssl.import_from_chain(private_key, *certificate_chain)
 
