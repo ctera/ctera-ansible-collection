@@ -106,9 +106,7 @@ class CteraPortalCertificate(CteraPortalBase):
 
     def _import_certificate(self):
         private_key = self.parameters['private_key']
-        server_certificate = self.parameters['server_certificate']
-        certificate_chain = self.parameters['certificate_chain']
-        certificate_chain.insert(0, server_certificate)
+        certificate_chain = [self.parameters['server_certificate']] + self.parameters['certificate_chain']
         self._ctera_portal.ssl.import_from_chain(private_key, *certificate_chain)
 
 
