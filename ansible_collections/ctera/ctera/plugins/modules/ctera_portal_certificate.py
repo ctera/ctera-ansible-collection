@@ -65,11 +65,9 @@ EXAMPLES = '''
 
 RETURN = r''' # '''
 
-import ansible_collections.ctera.ctera.plugins.module_utils.ctera_common as ctera_common
 from ansible_collections.ctera.ctera.plugins.module_utils.ctera_portal_base import CteraPortalBase
 
 try:
-    from cterasdk import CTERAException
     from cterasdk.lib import X509Certificate
 except ImportError:  # pragma: no cover
     pass  # caught by ctera_common
