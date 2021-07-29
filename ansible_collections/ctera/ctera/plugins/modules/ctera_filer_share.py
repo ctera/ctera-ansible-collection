@@ -145,9 +145,10 @@ EXAMPLES = '''
     name: demo
     directory: /main/public/demo
     acl:
-      name: Everyone
-      type: LocalGroup
-      perm: ReadWrite
+      - { name: 'Everyone', type: 'LocalGroup', perm: 'ReadWrite' }
+      - { name: 'CTERA\Support', type: 'DomainGroup', perm: 'ReadWrite' }
+      - { name: 'admin', type: 'LocalUser', perm: 'ReadWrite' }
+      - { name: 'jsmith@ctera.com', type: 'DomainUser', perm: 'ReadOnly' }
     access: authenticated
     ctera_host: "{{ ctera_filer_hostname }}"
     ctera_user: "{{ ctera_filer_user }}"

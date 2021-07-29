@@ -30,6 +30,7 @@ options:
   passphrase:
     description: Passphrase for the backup
     type: str
+    required: False
 
 requirements:
     - cterasdk
@@ -58,7 +59,7 @@ class CteraFilerBackup(CteraFilerBase):
         if self._ctera_filer.backup.is_configured():
             self.ansible_module.ctera_return_value().msg('Cloud Backup is already configured')
         else:
-            self._ctera_filer.backup.configure(self.parameters['passphrase'])
+            self._ctera_filer.backup.configure(self.parameters.pop('passphrase', None))
             self.ansible_module.ctera_return_value().changed().msg('Configured cloud backup')
 
 

@@ -60,8 +60,8 @@ EXAMPLES = '''
 - name: Directory Services - Connected
   ctera_filer_directory_services:
     domain: ctera.local
-    user: admin
-    pass: admin
+    username: admin
+    password: admin
     ctera_host: "{{ ctera_filer_hostname }}"
     ctera_user: "{{ ctera_filer_user }}"
     ctera_password: "{{ ctera_filer_password }}"
@@ -138,8 +138,9 @@ class CteraFilerDirectoryServices(CteraFilerBase):
         self.ansible_module.ctera_return_value().changed().msg('Connected to Active Directory').put(**connect_params)
 
     def _handle_modify(self, connected_domain):
-        if connected_domain['domain'] == self.parameters['domain'] and not self.parameters['force_reconnect']:
-            self.ansible_module.ctera_return_value().msg('The Filer is already connected to the Active Directory').put(domain=connected_domain['domain'])
+        if self._ctera_filer.directoryservice.connected() and \
+            connected_domain['domain'] == self.parameters['domain'] and not self.parameters['force_reconnect']:
+            self.ansible_module.ctera_return_value().msg('The Edge Filer is already connected to Active Directory').put(domain=connected_domain['domain'])
             return
         self._ctera_filer.directoryservice.disconnect()
         self._do_connect()
@@ -147,10 +148,10 @@ class CteraFilerDirectoryServices(CteraFilerBase):
     def _ensure_disconnected(self, connected_domain):
         if connected_domain['domain']:
             self._ctera_filer.directoryservice.disconnect()
-            self.ansible_module.ctera_return_value().changed().msg('Successfully disconnected the Filer from the Active Directory').put(
+            self.ansible_module.ctera_return_value().changed().msg('Successfully disconnected the Edge Filer from Active Directory').put(
                 domain=connected_domain['domain'])
         else:
-            self.ansible_module.ctera_return_value().msg('The Filer is already not connected to any Active Directory')
+            self.ansible_module.ctera_return_value().msg('The Edge Filer is already not connected to Active Directory')
 
     def _get_connected_domain(self):
         return self._to_domain_dict(self._ctera_filer.directoryservice.get_connected_domain())
