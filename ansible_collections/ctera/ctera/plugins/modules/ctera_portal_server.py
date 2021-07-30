@@ -127,7 +127,12 @@ class CteraPortalServer(CteraPortalBase):
     def _get_server(self):
         server = None
         try:
-            server = self._ctera_portal.servers.get(name=self.parameters['name'])
+            server = self._ctera_portal.servers.get(
+                name=self.parameters['name'],
+                include=[
+                    'isApplicationServer', 'renderingServer', 'publicIpaddr', 'allowUserLogin', 'replicationSettings'
+                ]
+            )
         except CTERAException as error:
             if error.response.code != 404:  # pylint: disable=no-member
                 raise
