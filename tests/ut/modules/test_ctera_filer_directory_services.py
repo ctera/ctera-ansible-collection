@@ -105,7 +105,7 @@ class TestCteraFilerDirectoryServices(BaseTest):
         if (not change_domain) and (not force_reconnect):
             directory_services._ctera_filer.directoryservice.disconnect.assert_not_called()
             directory_services._do_connect.assert_not_called()
-            self.assertEqual(directory_services.ansible_return_value.param.msg, 'The Edge Filer is already connected to the Active Directory')
+            self.assertEqual(directory_services.ansible_return_value.param.msg, 'The Edge Filer is already connected to Active Directory')
         else:
             directory_services._ctera_filer.directoryservice.disconnect.assert_called_once_with()
             directory_services._do_connect.assert_called_once_with()
@@ -120,8 +120,8 @@ class TestCteraFilerDirectoryServices(BaseTest):
         directory_services._ensure_disconnected(domain_dict)
         if is_connected:
             directory_services._ctera_filer.directoryservice.disconnect.assert_called_once_with()
-            self.assertEqual(directory_services.ansible_return_value.param.msg, 'Successfully disconnected the Edge Filer from the Active Directory')
+            self.assertEqual(directory_services.ansible_return_value.param.msg, 'Successfully disconnected the Edge Filer the Active Directory')
             self.assertTrue(directory_services.ansible_return_value.param.changed)
         else:
             directory_services._ctera_filer.directoryservice.disconnect.assert_not_called()
-            self.assertEqual(directory_services.ansible_return_value.param.msg, 'The Edge Filer is already not connected to any Active Directory')
+            self.assertEqual(directory_services.ansible_return_value.param.msg, 'The Edge Filer is already not connected to Active Directory')
