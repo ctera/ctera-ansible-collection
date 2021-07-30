@@ -120,7 +120,7 @@ class TestCteraFilerDirectoryServices(BaseTest):
         directory_services._ensure_disconnected(domain_dict)
         if is_connected:
             directory_services._ctera_filer.directoryservice.disconnect.assert_called_once_with()
-            self.assertEqual(directory_services.ansible_return_value.param.msg, 'Successfully disconnected the Edge Filer the Active Directory')
+            self.assertEqual(directory_services.ansible_return_value.param.msg, 'Successfully disconnected the Edge Filer from Active Directory')
             self.assertTrue(directory_services.ansible_return_value.param.changed)
         else:
             directory_services._ctera_filer.directoryservice.disconnect.assert_not_called()
