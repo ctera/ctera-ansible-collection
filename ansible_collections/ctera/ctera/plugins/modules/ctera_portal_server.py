@@ -38,7 +38,6 @@ options:
   app:
     description: Enable or disable the application service
     required: False
-    required: False
     type: bool
   preview:
     description: Enable or disable the preview service
