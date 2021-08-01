@@ -139,7 +139,8 @@ class CteraFilerDirectoryServices(CteraFilerBase):
 
     def _handle_modify(self, connected_domain):
         if self._ctera_filer.directoryservice.connected() and \
-            connected_domain['domain'] == self.parameters['domain'] and not self.parameters['force_reconnect']:
+                connected_domain['domain'] == self.parameters['domain'] and \
+                not self.parameters['force_reconnect']:
             self.ansible_module.ctera_return_value().msg('The Edge Filer is already connected to Active Directory').put(domain=connected_domain['domain'])
             return
         self._ctera_filer.directoryservice.disconnect()

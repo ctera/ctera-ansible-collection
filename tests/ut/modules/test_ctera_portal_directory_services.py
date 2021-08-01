@@ -102,7 +102,7 @@ class TestCteraPortalDirectoryServices(BaseTest):
             password='password',
             domain_controllers=mock.ANY
         )
-        dc_object = directory_services._ctera_portal.directoryservice.connect.call_args.kwargs['domain_controllers']
+        dc_object = directory_services._ctera_portal.directoryservice.connect.call_args[1]['domain_controllers']
         self.assertEqual(domain_controllers, [dc_object.primary, dc_object.secondary])
         self.assertEqual(directory_services.ansible_return_value.param.msg, 'Connected to Active Directory')
         self.assertTrue(directory_services.ansible_return_value.param.changed)

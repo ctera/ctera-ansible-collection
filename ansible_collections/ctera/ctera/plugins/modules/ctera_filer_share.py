@@ -139,7 +139,7 @@ options:
 
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: create local share
   ctera_filer_share:
     name: demo
