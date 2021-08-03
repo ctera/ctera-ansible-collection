@@ -73,7 +73,7 @@ class TestCteraPortalDirectoryServicesAccessControl(BaseTest):
         access_control.parameters = dict(state='present', acl=[admin, ro_admin_group])
         access_control._execute()
         access_control._ctera_portal.directoryservice.set_access_control.assert_called_once_with(mock.ANY)
-        acl = access_control._ctera_portal.directoryservice.set_access_control.call_args.args[0]
+        acl = access_control._ctera_portal.directoryservice.set_access_control.call_args[0][0]
         self.assertEqual(len(acl), len([admin, ro_admin_group]))
         for ace in acl:
             if ace.account.account_type == 'user':
