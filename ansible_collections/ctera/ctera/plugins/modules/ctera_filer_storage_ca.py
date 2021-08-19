@@ -77,7 +77,7 @@ class CteraFilerStorageCA(CteraFilerBase):
     def _execute(self):
         current_storage_ca = self._get_storage_ca()
         new_storage_ca = X509Certificate.load_certificate(self.parameters['certificate'])
-        if self.parameters['force_update'] or \
+        if not current_storage_ca or self.parameters['force_update'] or \
            new_storage_ca.subject not in current_storage_ca.subjectName or \
            new_storage_ca.issuer not in current_storage_ca.issuerName:
             self._import_certificate()
@@ -86,7 +86,8 @@ class CteraFilerStorageCA(CteraFilerBase):
             self.ansible_module.ctera_return_value().skipped().msg('No update required. Storage CA certificate did not change')
 
     def _get_storage_ca(self):
-        return self._ctera_filer.ssl.get_storage_ca()
+        current_storage_ca = self._ctera_filer.ssl.get_storage_ca()
+        return None if (current_storage_ca.subjectName is None or current_storage_ca.issuerName is None) else current_storage_ca
 
     def _import_certificate(self):
         certificate = self.parameters['certificate']
